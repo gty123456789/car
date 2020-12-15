@@ -1,0 +1,55 @@
+#include <Servo.h> 
+#include "SoftwareSerial.h"
+Servo myservo;  // create servo object to control a servo 
+                // a maximum of eight servo objects can be created 
+ //超声波测距引脚
+const int mTrigPin = 8; 
+const int mEchoPin = 7;
+int mDistance=0;
+//舵机引脚
+int pos = 0;  
+void setup() {
+   myservo.attach(9);  // attaches the servo on pin 9 to the servo object 
+Serial.begin(9600);     //初始化串口
+}
+
+void loop() {
+ 
+
+  for(pos = 0; pos < 180; pos += 1)  // goes from 0 degrees to 180 degrees 
+  { pinMode(mTrigPin, OUTPUT); 
+// 要检测引脚上输入的脉冲宽度，需要先设置为输入状态
+pinMode(mEchoPin, INPUT); 
+
+// 产生一个10us的高脉冲
+digitalWrite(mTrigPin, LOW);
+delayMicroseconds(2); 
+digitalWrite(mTrigPin, HIGH); 
+delayMicroseconds(10); 
+digitalWrite(mTrigPin, LOW); 
+
+mDistance = pulseIn(mEchoPin, HIGH) / 58.0; 
+//Serial.println(mDistance);
+Serial.write(mDistance);                                 // in steps of 1 degree 
+    myservo.write(pos);              // tell servo to go to position in variable 'pos' 
+    delay(5);                       // waits 15ms for the servo to reach the position 
+  } 
+  for(pos = 180; pos>=1; pos-=1)     // goes from 180 degrees to 0 degrees 
+  {  pinMode(mTrigPin, OUTPUT); 
+// 要检测引脚上输入的脉冲宽度，需要先设置为输入状态
+pinMode(mEchoPin, INPUT); 
+
+// 产生一个10us的高脉冲
+digitalWrite(mTrigPin, LOW);
+delayMicroseconds(2); 
+digitalWrite(mTrigPin, HIGH); 
+delayMicroseconds(10); 
+digitalWrite(mTrigPin, LOW); 
+
+mDistance = pulseIn(mEchoPin, HIGH) / 58.0; 
+//Serial.println(mDistance);
+Serial.write(mDistance);                                   
+    myservo.write(pos);              // tell servo to go to position in variable 'pos' 
+    delay(5);                       // waits 15ms for the servo to reach the position 
+  } 
+}
